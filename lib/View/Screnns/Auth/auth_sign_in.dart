@@ -1,5 +1,12 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_practice/Services/FirebaseServices/firebase_services.dart';
+import 'package:firebase_practice/View/Screnns/Auth/auth_sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../HomePage/home_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -10,7 +17,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
 
-
+    final FirebasServices auth= FirebasServices();
   TextEditingController emailController=TextEditingController();
   TextEditingController passWordController=TextEditingController();
 
@@ -21,9 +28,16 @@ class _SignInPageState extends State<SignInPage> {
       body:Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+
+          GestureDetector(
+              onTap: (){
+                Get.to(SignUpPage());
+              },
+              child: Text("SignInPage")),
+              SizedBox(height: 50.0,),
           TextField(
             controller:emailController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
                 hintText:"Email",
                 border:OutlineInputBorder(
                   borderRadius:  BorderRadius.all(Radius.circular(30.0)),
@@ -31,24 +45,37 @@ class _SignInPageState extends State<SignInPage> {
                 )
             ),
           ),
-          SizedBox(height: 10.0,),
+          const SizedBox(height: 10.0,),
           TextField(
             controller:passWordController,
-            decoration: InputDecoration(
-                hintText:"Email",
+            decoration: const InputDecoration(
+                hintText:"Password",
                 border:OutlineInputBorder(
                   borderRadius:  BorderRadius.all(Radius.circular(30.0)),
 
                 )
             ),
           ),
-          SizedBox(height: 10.0,),
+          const SizedBox(height: 10.0,),
 
-          ElevatedButton(onPressed:(){print("Hi");}, child:Text("submit")),
+          ElevatedButton(onPressed:(){ signIn();}, child:const Text("SignIn")),
         ],
 
       ),
 
     );
+  }
+
+          signIn() async {
+    String   email=emailController.text;
+    String  password=passWordController.text;
+    User? user= await auth.signInWithEmailAndPassWord(email, password);
+    if(user!=null){
+      print("Done");
+      Get.to(HomePage());
+    }
+    else{
+      print("try agin");
+    }
   }
 }
